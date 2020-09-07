@@ -18,6 +18,7 @@
 {{/*  if an item page, use the item image */}}
 {{ if and (.IsPage) (eq .Type "items") }}
     {{ $imagePath := partial "img" (dict "context" . "type" "share") | urlize }}
+    {{ $imagePath = print $imagePath ".*" }}
     {{ $imageResource := (.Site.GetPage "section" "uploads").Resources.GetMatch $imagePath }}
     {{ if ne $imageResource nil }}
         {{ $image = $imageResource.Permalink }}

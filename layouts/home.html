@@ -16,7 +16,7 @@
         {{ $allItems = merge $allItems $item }}
     {{ end }}
     <div class="item-feed small">
-        {{ range $.Site.Data.trending.feed.entry | shuffle | first 3 }}
+        {{ range $.Site.Data.trending.feed.entry | first 3 }}
             {{ $permalink := index .title "$t" }}
             {{ if isset $allItems $permalink }}
                 {{ $path := index $allItems $permalink }}
