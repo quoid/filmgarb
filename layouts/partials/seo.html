@@ -1,0 +1,51 @@
+{{/*  if page specific title exists, use that, if not use site title */}}
+{{ $title := .Site.Title }}
+{{ if and (ne .Page.Title nil) (not .IsHome) }}
+    {{ $title = print (.Page.Title | title) " - Filmgarb.com" }}
+{{ end }}
+{{/*  if single item page, or single blog page, use page content  */}}
+{{/*  if page specific description exists, use that */}}
+{{/*  if neither exist, use default description  */}}
+{{ $description := .Site.Params.Description }}
+{{ if and (.IsPage) (or (eq .Type "blog") (eq .Type "items")) }}
+    {{ $description = .Content | truncate 150 "..." }}
+{{ end }}
+{{ if ne .Page.Params.Description nil }}
+    {{ $description = .Page.Params.Description }}
+{{ end }}
+{{/*  social sharing image  */}}
+{{ $image := print .Site.BaseURL "img/" .Site.Params.image }}
+{{/*  if an item page, use the item image */}}
+{{ if and (.IsPage) (eq .Type "items") }}
+    {{ $imagePath := partial "img" (dict "context" . "type" "share") | urlize }}
+    {{ $imageResource := (.Site.GetPage "section" "uploads").Resources.GetMatch $imagePath }}
+    {{ if ne $imageResource nil }}
+        {{ $image = $imageResource.Permalink }}
+    {{ end }}
+{{ end }}
+<title>{{ $title }}</title>
+<meta name="description" content="{{ $description }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{ $image }}">
+<meta name="twitter:title" content="{{ $title }}">
+<meta name="twitter:description" content="{{ $description }}">
+<meta property="twitter:url" content="{{ .Permalink }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $description }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:image" content="{{ $image }}">
+{{/*  add publish/mod dates for items and blog posts  */}}
+{{ if .IsPage }}
+    {{ $iso8601 := "2006-01-02T15:04:05-07:00" }}
+    {{ if not .PublishDate.IsZero }}
+        <meta property="article:published_time" content="{{ .PublishDate.Format $iso8601 }}">
+    {{ else if not .Date.IsZero }}
+        <meta property="article:published_time" content="{{ .Date.Format $iso8601 }}">
+    {{ end }}
+    {{ if not .Lastmod.IsZero }}
+        <meta property="article:modified_time" content="{{ .Lastmod.Format $iso8601 }}">
+    {{else if not .Date.IsZero }}
+        <meta property="article:modified_time" content="{{ .Lastmod.Format $iso8601 }}">
+    {{ end }}
+{{ end }}

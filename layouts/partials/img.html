@@ -1,0 +1,9 @@
+{{/*  returns the image url for an actor, item or title  */}}
+{{ $img := "foo" }}
+{{ if ne .type "cover" }}
+    {{ $img = .context.File.BaseFileName }}
+{{ else if eq .type "cover"}}
+    {{ $term := delimit (split .context.Data.Term " ") "_" | urlize }}
+    {{ $img = print "_" .context.Data.Plural "-" $term | urlize }}
+{{ end }}
+{{ $img }}

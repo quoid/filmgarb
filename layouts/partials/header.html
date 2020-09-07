@@ -1,0 +1,28 @@
+<header>
+    <div class="container">
+        <div class="logo">
+            <a href="/">{{ partial "svg" (dict "name" "logo") }}</a>
+        </div>
+        <div class="header-icons" title="Site search">
+            <a class="icon" href="https://duckduckgo.com/?q=site%3Afilmgarb.com" target="_blank">
+                {{ partial "svg" (dict "name" "loupe") }}
+            </a>
+            <a href="/index.xml" class="icon" title="RSS feed">
+                {{ partial "svg" (dict "name" "rss") }}
+            </a>
+        </div>
+        <div class="tagline">{{ .Site.Params.tagline }}</div>
+        <nav>
+            {{ $currentPage := . }}
+            {{ range .Site.Menus.header }}
+                <a
+                    {{ if $currentPage.IsMenuCurrent "header" . }}
+                    class="active"
+                    {{ end }}
+                    href="{{ .URL }}">
+                        {{- .Name | humanize -}}
+                </a>
+            {{ end }}
+        </nav>
+    </div>
+</header>

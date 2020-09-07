@@ -1,0 +1,65 @@
+$enable-large: false;
+
+// colors
+$body-background-color: #242626;
+$main-background-color: #282b2d;
+$code-background-color: #161818;
+$link-color: #6bc9ff;
+$unavailable-color: #ff736b;
+$primary-font-color: rgba(white, 0.90);
+$secondary-font-color: rgba(white, 0.75);
+$disabled-font-color: rgba(white, 0.40);
+$image-border-color: rgba(black, 0.65);
+$hr-color: rgba(white, 0.10);
+
+// misc styles
+$border-radius: 0.375rem;
+$box-shadow-large: 0px 8px 30px 0px rgba(0,0,0,0.15);
+$box-shadow-small: 0px 4px 15px 0px rgba(0,0,0,0.15);
+
+// breakpoints
+$breakpoint-small: 420px; // 26.250em
+$breakpoint-medium: 600px; // 37.500em
+$breakpoint-large: 800px; // 50.000em
+
+// container properties
+$gutter-small: 0.750rem;
+$gutter-large: 1.125rem;
+$max-width-small: 39.000rem; // 624px = 600px + $gutter-small * 2 (24px)
+$max-width-large: 62.250rem; // 996px = 960px + $gutter-large * 2 (32px)
+
+
+// fonts sizings
+@mixin base-font-size {
+    font-size: 0.938rem;
+    letter-spacing: -0.024em;
+    line-height: 1.500rem;
+
+    @media (min-width: $breakpoint-medium) {
+        font-size: 1.000rem;
+    }
+}
+
+@mixin heading-font-size {
+    font-size: 2.000rem;
+    letter-spacing: 0;
+    line-height: 2.000rem;
+}
+
+@mixin subheading-font-size {
+    font-size: 1.313rem;
+    letter-spacing: -0.0183em;
+    line-height: 1.500rem;
+}
+
+@mixin large-font-size {
+    font-size: 1.188rem;
+    letter-spacing: -0.0183em;
+    line-height: 1.500rem;
+}
+
+@mixin small-font-size {
+    font-size: 0.813rem;
+    letter-spacing: 0;
+    line-height: 1.000rem;
+}

@@ -1,0 +1,57 @@
+{{/*  get image name and find the matched resource in uploads folder  */}}
+{{ $imageName := partial "img" (dict "context" .context "type" "cover") | urlize }}
+{{ $imageName = print $imageName ".*" }}
+{{ $imageResource := (.context.Site.GetPage "section" "uploads").Resources.GetMatch $imageName }}
+{{/*  if image resource is matched, create image sizes  */}}
+{{ $cover1x := "" }}
+{{ $cover2x := "" }}
+{{ if ne $imageResource nil }}
+    {{ $cover1x = $imageResource }}
+    {{ $cover2x = $imageResource }}
+    {{/*  ensure the source image dimension exceed desired image sizes  */}}
+    {{ if ge $imageResource.Width "185" }}
+        {{ $cover1x = $imageResource.Fill "185x278 Center Lanczos" }}
+    {{ end }}
+    {{ if ge $imageResource.Width "370" }}
+        {{ $cover2x = $imageResource.Fill "370x556 Center Lanczos" }}
+    {{ end }}
+{{ end }}
+<div class="cover">
+    <figure>
+        <a href="{{ .context.RelPermalink }}" class="responsive-image-2-3">
+            {{/*  again, check if image resource exists  */}}
+            {{ if ne $imageResource nil }}
+                {{/*  check type since each have different sizes  */}}
+                {{ if eq .type "list" }}
+                    <img
+                        src="{{ $cover1x.RelPermalink }}"
+                        sizes="(max-width: 600px) 30vw, 143px"
+                        srcset="{{ $cover1x.RelPermalink }} {{ $cover1x.Width }}w,
+                                {{ $cover2x.RelPermalink }} {{ $cover2x.Width }}w"
+                        alt="{{ .context.Data.Term | title }}"
+                        loading="lazy"
+                    >
+                {{ else }}
+                    <img
+                        src="{{ $cover1x.RelPermalink }}"
+                        sizes="79px"
+                        srcset="{{ $cover1x.RelPermalink }} {{ $cover1x.Width }}w,
+                                {{ $cover2x.RelPermalink }} {{ $cover2x.Width }}w"
+                        alt="{{ .context.Data.Term | title }}"
+                        loading="lazy"
+                    >
+                {{ end }}
+            {{/*  if no image resource found serve fallback image */}}
+            {{ else }}
+                <img
+                    src="/img/fallback-cover.png"
+                    alt="{{ .context.Data.Term | title }}"
+                    loading="lazy"
+                >
+            {{ end }}
+        </a>
+    </figure>
+    {{ if eq .type "list" }}
+        <div>{{ .context.Data.Term | title }}</div>
+    {{ end }}
+</div>

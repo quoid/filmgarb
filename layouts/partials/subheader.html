@@ -1,0 +1,19 @@
+{{ $h1 := cond (eq .Kind "term") .Data.Term .Title }}
+<div class="subheader">
+    {{ if and (or (eq .Type "actors") (eq .Type "titles") ) (eq .Kind "term") }}
+        {{ partial "cover" (dict "context" .) }}
+    {{ end }}
+    <div>
+        <h1>{{ $h1 | title }}</h1>
+        <div>
+            {{ if eq .Kind "term" }}
+                All items tagged with <a href="{{ .RelPermalink}}">#{{ .Data.Term | urlize}}</a>
+            {{ else if eq .Kind "taxonomy" }}
+                All of the {{ .Data.Plural }} featured on Filmgarb
+            {{ else }}
+                {{ .Params.subtitle }}
+            {{ end }}
+        </div>
+    </div>
+    <hr>
+</div>

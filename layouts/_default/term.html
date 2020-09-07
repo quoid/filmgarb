@@ -1,0 +1,11 @@
+{{ define "main" }}
+<div class="container">
+    {{ partial "subheader" . }}
+    <div class="item-feed list">
+        {{ range .Paginator.Pages }}
+            {{ partial "item" (dict "context" . "type" "list") }}
+        {{ end }}
+    </div>
+    {{ partial "paginator.html" . }}
+</div>
+{{ end }}

@@ -1,0 +1,16 @@
+footer {
+    @include small-font-size();
+    line-height: 1.500rem;
+    padding: 1.500rem 0 3.000rem 0;
+    text-align: center;
+
+    a {
+        color: inherit;
+        font-weight: inherit;
+    }
+
+    nav a:nth-child(2) {
+        margin: 0 1.500rem;
+    }
+
+}

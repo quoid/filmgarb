@@ -1,0 +1,44 @@
+{{ define "main" }}
+{{ $items := where (where .Site.RegularPages "Type" "items") ".Params.graveyard" "!=" true }}
+<div class="container">
+    <h1>Featured</h1>
+    <div class="item-feed featured">
+        {{ range sort (where $items ".Params.featured" true) ".Params.featWeight" "desc" | first 2}}
+            {{ partial "item" (dict "context" . "type" "featured") }}
+        {{ end }}
+    </div>
+    <hr>
+    <h1>Trending</h1>
+    {{/*  see popular.html for more details on the method used below  */}}
+    {{ $allItems := dict }}
+    {{ range $items }}
+        {{ $item := dict .RelPermalink .File.Path }}
+        {{ $allItems = merge $allItems $item }}
+    {{ end }}
+    <div class="item-feed small">
+        {{ range $.Site.Data.trending.feed.entry | shuffle | first 3 }}
+            {{ $permalink := index .title "$t" }}
+            {{ if isset $allItems $permalink }}
+                {{ $path := index $allItems $permalink }}
+                {{ with $.Site.GetPage $path }}
+                    {{ partial "item" (dict "context" . "type" "small") }}
+                {{ end }}
+            {{ end }}
+        {{ end }}
+    </div>
+    <hr>
+    <h1>Newest</h1>
+    <div class="item-feed small">
+        {{ range first 3 $items }}
+            {{ partial "item" (dict "context" . "type" "small") }}
+        {{ end }}
+    </div>
+    <hr>
+    <h1>Random</h1>
+    <div class="item-feed mosaic">
+        {{ range shuffle $items | first 6 }}
+            {{ partial "item" (dict "context" . "type" "mosaic") }}
+        {{ end }}
+    </div>
+</div>
+{{ end }}

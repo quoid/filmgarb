@@ -1,0 +1,98 @@
+{{/*  get image name and find the matched resource in uploads folder  */}}
+{{ $imageName := partial "img" (dict "context" .context "type" .type) | urlize }}
+{{ $imageName = print $imageName ".*" }}
+{{ $imageResource := (.context.Site.GetPage "uploads").Resources.GetMatch $imageName }}
+{{/*  if image resource is matched, create image sizes  */}}
+{{ $item1x := "" }}
+{{ $item2x := "" }}
+{{ $item3x := "" }}
+{{ if ne $imageResource nil }}
+    {{ $item1x = $imageResource }}
+    {{ $item2x = $imageResource }}
+    {{ $item3x = $imageResource }}
+    {{/*  ensure the source image dimension exceed desired image sizes  */}}
+    {{ if ge $imageResource.Width "295" }}
+        {{ $item1x = $imageResource.Fill "295x166 Center Lanczos" }}
+    {{ end }}
+    {{ if ge $imageResource.Width "599" }}
+        {{ $item2x = $imageResource.Fill "599x337 Center Lanczos" }}
+    {{ end }}
+    {{ if ge $imageResource.Width "1198" }}
+        {{ $item3x = $imageResource.Fill "1198x674 Center Lanczos" }}
+    {{ end }}
+{{ end }}
+<article class="item">
+    <figure>
+        <a href="{{ .context.RelPermalink }}" class="responsive-image-16-9">
+            {{/*  again, check if image resource exists  */}}
+            {{ if ne $imageResource nil }}
+                {{/*  check type since each have different sizes  */}}
+                {{ if eq .type "featured" }}
+                    <img
+                        src="{{ $item2x.RelPermalink }}"
+                        sizes="(max-width: 600px) 100vw, 600px"
+                        srcset="{{ $item2x.RelPermalink }} {{ $item2x.Width }}w,
+                                {{ $item3x.RelPermalink }} {{ $item3x.Width }}w"
+                        alt="{{ .context.Title | title }}"
+                        loading="lazy"
+                    >
+                {{ else if eq .type "small" }}
+                    <img
+                        src="{{ $item1x.RelPermalink }}"
+                        sizes="(max-width: 600px) 50vw, 295px"
+                        srcset="{{ $item1x.RelPermalink }} {{ $item1x.Width }}w,
+                                {{ $item2x.RelPermalink }} {{ $item2x.Width }}w,
+                                {{ $item3x.RelPermalink }} {{ $item3x.Width }}w"
+                        alt="{{ .context.Title | title }}"
+                        loading="lazy"
+                    >
+                {{ else if eq .type "mosaic" }}
+                    <img
+                        src="{{ $item1x.RelPermalink }}"
+                        sizes="(max-width: 600px) 50vw, 200px"
+                        srcset="{{ $item1x.RelPermalink }} {{ $item1x.Width }}w,
+                                {{ $item2x.RelPermalink }} {{ $item2x.Width }}w,
+                                {{ $item3x.RelPermalink }} {{ $item3x.Width }}w"
+                        alt="{{ .context.Title | title }}"
+                        loading="lazy"
+                    >
+                {{ else if eq .type "list" }}
+                    <img
+                        src="{{ $item1x.RelPermalink }}"
+                        sizes="(max-width: 600px) 100vw, 295px"
+                        srcset="{{ $item1x.RelPermalink }} {{ $item1x.Width }}w,
+                                {{ $item2x.RelPermalink }} {{ $item2x.Width }}w,
+                                {{ $item3x.RelPermalink }} {{ $item3x.Width }}w"
+                        alt="{{ .context.Title | title }}"
+                        loading="lazy"
+                    >
+                {{ else }}
+                    <img
+                        src="{{ $imageResource.RelPermalink }}"
+                        alt="{{ .context.Title | title }}"
+                        loading="lazy"
+                    >
+                {{ end }}
+            {{/*  if no image resource found serve fallback image */}}
+            {{ else }}
+                <img
+                    src="/img/fallback-item.png"
+                    alt="{{ .context.Title | title }}"
+                    loading="lazy"
+                >
+            {{ end }}
+        </a>
+    </figure>
+    <div class="item-content">
+        <div class="title">{{ .context.Title | title }}</div>
+        <p>{{ .context.Content | plainify | safeHTML | truncate 140 "..." }}</p>
+        {{/*  if item in unavailable, don't show purchase link  */}}
+        {{ if eq .context.Params.graveyard true }}
+            <div class="unavailable">unavailable</div>
+        {{ else }}
+            <a href="{{ .context.Params.link }}" class="buy" target="_blank" rel="nofollow">
+                {{ .context.Params.price }} @ {{ .context.Params.place }} →
+            </a>
+        {{ end }}
+    </div>
+</article>

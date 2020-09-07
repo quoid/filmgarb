@@ -1,0 +1,17 @@
+{{ define "main" }}
+<div class="container">
+    {{ if or (eq .Type "actors") (eq .Type "titles") }}
+        <div class="cover-feed">
+            {{ range sort .Pages "Title" "asc" }}
+                {{ partial "cover" (dict "context" . "type" "list") }}
+            {{ end }}
+        </div>
+    {{ else }}
+        <div class="term-feed">
+            {{ range sort .Pages "Title" "asc" }}
+                <a href="{{ .RelPermalink }}">{{ .Data.Term }}</a>
+            {{ end }}
+        </div>
+    {{ end }}
+</div>
+{{ end }}

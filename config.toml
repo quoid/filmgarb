@@ -1,0 +1,94 @@
+baseURL = "https://www.filmgarb.com/"
+languageCode = "en-us"
+title = "Filmgarb - Clothes from movies n' shows"
+Paginate = 24
+summaryLength = 10
+[minify]
+    disableCSS = true
+    disableHTML = false
+    disableJS = true
+    disableJSON = true
+    disableSVG = true
+    disableXML = false
+    minifyOutput = true
+[params]
+    description = "Filmgarb is a catalog of clothes and accessories from all of your favorite movies and shows. We can pickle that."
+    image = "site.png"
+    tagline = "Clothes from movies n' shows"
+    version = "1.0.0"
+[taxonomies]
+    actor = "actors"
+    category = "categories"
+    media = "media"
+    title = "titles"
+[permalinks]
+    actors = "/:slug"
+    categories = "/:slug"
+    items = "/:slug"
+    media = "/:slug"
+    titles = "/:slug"
+    blog = "/:section/:filename"
+[menu]
+    [[menu.header]]
+        identifier = "new"
+        name = "new"
+        url = "/items/"
+        weight = -130
+    [[menu.header]]
+        identifier = "popular"
+        name = "popular"
+        url = "/popular/"
+        weight = -120
+    [[menu.header]]
+        identifier = "actors"
+        name = "actors"
+        url = "/actors/"
+        weight = -110
+    [[menu.header]]
+        identifier = "titles"
+        name = "titles"
+        url = "/titles/"
+        weight = -105
+    [[menu.footer]]
+        identifier = "about"
+        name = "about"
+        url = "/blog/about/"
+        weight = -130
+    [[menu.footer]]
+        identifier = "blog"
+        name = "blog"
+        url = "/blog/"
+        weight = -120
+    [[menu.footer]]
+        identifier = "submit"
+        name = "submit"
+        url = "/blog/about/#submit-items"
+        weight = -110
+[related]
+    threshold = 80
+    includeNewer = true
+    toLower = false
+    [[related.indices]]
+        name = "character"
+        weight = 100
+    [[related.indices]]
+        name = "actors"
+        weight = 99
+    [[related.indices]]
+        name = "titles"
+        weight = 95
+    [[related.indices]]
+        name = "categories"
+        weight = 82
+    [[related.indices]]
+        name = "media"
+        weight = 81
+[server]
+    [[server.headers]]
+        for = "/*"
+        [server.headers.values]
+            Content-Security-Policy =  "default-src 'none'; script-src 'self' https://www.google-analytics.com; style-src 'self'; img-src 'self' https://www.google-analytics.com www.google-analytics.com; media-src 'self'; connect-src https://www.google-analytics.com www.google-analytics.com ws://localhost:1313/livereload"
+            Referrer-Policy = "strict-origin-when-cross-origin"
+            X-Content-Type-Options = "nosniff"
+            X-Frame-Options = "DENY"
+

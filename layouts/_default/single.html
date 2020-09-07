@@ -1,0 +1,77 @@
+{{ define "main" }}
+{{/*  get the metadata for tags  */}}
+{{ $actor := index (.Params.actors) 0 | urlize }}
+{{ $category := index (.Params.categories) 0 | urlize }}
+{{ $featureTitle := index (.Params.titles) 0 | urlize}}
+{{ $media := index (.Params.media) 0 | urlize }}
+{{/*  get the image name and find the matched resource in uploads folder  */}}
+{{ $imageName := partial "img" (dict "context" . "type" "item") | urlize }}
+{{ $imageName = print $imageName ".*" }}
+{{ $imageResource := (.Site.GetPage "uploads").Resources.GetMatch $imageName }}
+<div class="container">
+    <article class="single single-item">
+        <figure>
+            <a href="https://forms.gle/fNo932MizpSYxzkg9" class="icon" title="Report post" target="_blank">
+                {{ partial "svg" (dict "name" "report") }}
+            </a>
+            <div class="responsive-image-16-9">
+                {{/*  if an image resource is matched, create image sizes  */}}
+                {{ if ne $imageResource nil }}
+                    {{ $single1x := $imageResource }}
+                    {{ $single2x := $imageResource }}
+                    {{ if ge $imageResource.Width "599" }}
+                        {{ $single1x = $imageResource.Fill "599x337 Center Lanczos" }}
+                    {{ end }}
+                    {{ if ge $imageResource.Width "1198" }}
+                        {{ $single2x = $imageResource.Fill "1198x674 Center Lanczos" }}
+                    {{ end }}
+                    <img
+                        src="{{ $single1x.RelPermalink }}"
+                        sizes="(max-width: 600px) 100vw, 600px"
+                        srcset="{{ $single1x.RelPermalink }} {{ $single1x.Width }}w,
+                                {{ $single2x.RelPermalink }} {{ $single2x.Width }}w"
+                        alt="{{ .Title | title }}"
+                    >
+                {{/*  if no image resource found serve fallback image */}}
+                {{ else }}
+                    <img src="/img/fallback-item.png" alt="{{ .Title | title }}">
+                {{ end }}
+            </div>
+        </figure>
+        <h1>{{ .Title | title }}</h1>
+        <div class="tags">
+            <a href="/{{ $category }}/">#{{ $category }},&nbsp;</a>
+            <a href="/{{ $media }}/">#{{ $media }},&nbsp;</a>
+            <a href="/{{ $actor }}/">#{{ $actor }},&nbsp;</a>
+            <a href="/{{ $featureTitle }}/">#{{ $featureTitle }}</a>
+        </div>
+        {{ .Content }}
+        {{ if .Params.graveyard }}
+        <div class="unavailable">unavailable</div>
+        {{ else }}
+        <a href="{{ .Params.link }}" class="buy" target="_blank" rel="nofollow">
+            {{ .Params.price }} @ {{ .Params.place }} →
+        </a>
+        {{ end }}
+    </article>
+    <hr>
+    <h1>Related</h1>
+    <div class="item-feed small">
+        {{ $related := .Site.RegularPages.Related . | first 4 }}
+        {{ with $related }}
+            {{ range . }}
+                {{ partial "item" (dict "context" . "type" "small") }}
+            {{ end }}
+        {{ end }}
+    </div>
+    <hr>
+    <h1>Random</h1>
+    <div class="item-feed mosaic">
+        {{ $random := where (where .Site.RegularPages "Type" "items") "Title" "!=" .Title }}
+        {{ range shuffle $random | first 6 }}
+            {{ partial "item" (dict "context" . "type" "mosaic") }}
+        <br>
+        {{ end }}
+    </div>
+</div>
+{{ end }}

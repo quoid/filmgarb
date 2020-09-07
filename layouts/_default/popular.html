@@ -1,0 +1,52 @@
+{{ define "main" }}
+<div class="container">
+    {{ partial "subheader" . }}
+    {{/*  popular.json contains RelPermalinks for item pages, sorted by views  */}}
+    {{/*  unfortunately, this data only contains the permalink, not the file path  */}}
+    {{/*  a path is needed to .GetPage - .RelPermalinks and .File.Path differ for items  */}}
+    {{/*  ranging through .Site.RegularPages to check if RelPermalink is in popular will
+          result in an item list that does not reflect the order in popular.json  */}}
+    {{/*  ranging through the popular.json to create content won't allow pagination  */}}
+    {{/*  all of the above needs to be considered and worked around  */}}
+
+    {{/*  this slice will store the page data to create the paginated popular pages  */}}
+    {{ $popular := slice }}
+
+    {{/*  map of all of the items' RelPermalinks (key) and .File.Path (value)  */}}
+    {{/*  this will allow getting a .File.Path by .RelPermalink  */}}
+    {{ $items := dict }}
+
+    {{/*  create the item map  */}}
+    {{ range where .Site.RegularPages "Type" "items" }}
+        {{ $item := dict .RelPermalink .File.Path }}
+        {{ $items = merge $items $item }}
+    {{ end }}
+
+    {{/*  popular.json might contain RelPermalinks from the pre-hugo version of the website  */}}
+    {{/*  since migrating to hugo, some pages were removed or had their permalink changed  */}}
+    {{/*  will need to ensure that the RelPermalink actually exists in website  */}}
+    {{ range  $.Site.Data.popular.feed.entry }}
+        {{/*  get the RelPermalink from json  */}}
+        {{ $permalink := index .title "$t" }}
+        {{/*  check that the RelPermalink exists in website  */}}
+        {{ if isset $items $permalink }}
+            {{/*  get the .File.Path from the items map  */}}
+            {{ $path := index $items $permalink }}
+            {{/*  get the page from the .File.Path  */}}
+            {{ with $.Site.GetPage $path }}
+                {{/*  RelPermalink in website & page exists, push to Pages slice ($popular)  */}}
+                {{ $popular = $popular | append . }}
+            {{ end }}
+        {{ end }}
+    {{ end }}
+
+    {{/*  at this point a properly ordered popular posts list exists, create elements  */}}
+    {{/*  since $popular is a slice of Pages, it can be paginated  */}}
+    <div class="item-feed list">
+        {{ range (.Paginate $popular).Pages }}
+            {{ partial "item" (dict "context" . "type" "list") }}
+        {{ end }}
+    </div>
+    {{ partial "paginator.html" . }}
+</div>
+{{ end }}

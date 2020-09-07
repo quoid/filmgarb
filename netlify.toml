@@ -1,0 +1,19 @@
+[build]
+    publish = "public"
+    command = "hugo --gc --minify"
+
+[context.production.environment]
+    HUGO_VERSION = "0.74.3"
+    HUGO_ENV = "production"
+    HUGO_ENABLEGITINFO = "true"
+
+[[plugins]]
+    package = "netlify-plugin-hugo-cache-resources"
+
+[[headers]]
+    for = "/*"
+    [headers.values]
+        Content-Security-Policy =  "default-src 'none'; script-src 'self' https://www.google-analytics.com; style-src 'self'; img-src 'self' https://www.google-analytics.com www.google-analytics.com; media-src 'self'; connect-src https://www.google-analytics.com www.google-analytics.com"
+        Referrer-Policy = "strict-origin-when-cross-origin"
+        X-Content-Type-Options = "nosniff"
+        X-Frame-Options = "DENY"

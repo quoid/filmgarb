@@ -1,0 +1,29 @@
+{{ define "main" }}
+<div class="container">
+    {{ partial "subheader" . }}
+    {{ if eq .Type "items" }}
+        <div class="item-feed list">
+            {{ range (.Paginate (where .Site.RegularPages "Type" "items")).Pages }}
+                {{ partial "item" (dict "context" . "type" "list") }}
+            {{ end }}
+        </div>
+    {{ else if eq .Type "blog" }}
+        <div class="post-feed">
+            {{ range (.Paginate (where .Site.RegularPages "Type" "blog") 6).Pages }}
+                <a class="post" href="{{ .RelPermalink }}">
+                    <div class="date">
+                        {{ .PublishDate.Format "2 January 2006" }}
+                    </div>
+                    <div class="title">{{ .Title | title }}</div>
+                    {{ if .Params.excerpt }}
+                        {{ .Params.excerpt | truncate 140 "..." }}
+                    {{ else }}
+                        {{ .Content | truncate 140 "..." | plainify }}
+                    {{ end }}
+                </a>
+            {{ end }}
+        </div>
+    {{ end }}
+    {{ partial "paginator.html" . }}
+</div>
+{{ end }}

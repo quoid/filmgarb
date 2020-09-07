@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+{{/*  css source mapped a non-prefixed css for development builds  */}}
+{{/*  css minified and auto prefixed css for production builds  */}}
+{{ $styleOpts := dict "targetPath" "styles.css" "enableSourceMap" true }}
+{{ $css := resources.Get "sass/_main.scss" | resources.ToCSS $styleOpts }}
+{{ if eq hugo.Environment "production" }}
+    {{ $styleOpts = dict "targetPath" "styles.css" "outputStyle" "compressed" }}
+    {{ $css = resources.Get "sass/_main.scss" | resources.ToCSS $styleOpts | resources.PostCSS }}
+{{ end }}
+<html lang="{{ .Site.LanguageCode }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="canonical" href="{{ .Permalink }}">
+        <link rel="stylesheet" href="{{ $css.RelPermalink }}">
+        {{ partial "seo" . }}
+        {{/*  favicon / icons  */}}
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#242626">
+        <meta name="msapplication-TileColor" content="#242626">
+        <meta name="msapplication-config" content="/browserconfig.xml">
+        <meta name="theme-color" content="#242626">
+        <meta name="apple-mobile-web-app-title" content="Filmgarb">
+        {{ hugo.Generator }}
+        <meta name="version" content="{{ .Site.Params.version }}">
+        <meta name="build-date" content="{{ dateFormat `Mon 02 Jan 2006 15:04:00 MST` now.UTC }}">
+        {{ $js := resources.Get "js/main.js" }}
+        <script type="text/javascript" src="{{ $js.RelPermalink }}"></script>
+        <script async src="https://www.google-analytics.com/analytics.js"></script>
+    </head>
+    <body class='{{ if eq .Kind "404" }}_404{{ else }}{{ .Type }} {{ .Kind }}{{ end }}'>
+        {{ partial "header" . }}
+        <main>
+            {{ block "main" . }}
+            {{ end }}
+        </main>
+        {{ partial "footer" . }}
+    </body>
+</html>

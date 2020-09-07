@@ -1,0 +1,25 @@
+{{ define "main" }}
+<div class="container">
+    <article class="single single-post">
+        <div class="date">{{ .PublishDate.Format "2 January 2006" }}</div>
+        <div class="tags"><a href="/blog/">#blog</a></div>
+        <h1>{{ .Title | title }}</h1>
+        {{ .Content }}
+    </article>
+    {{ if or .NextInSection .PrevInSection }}
+    <div class="paginator">
+        <hr>
+        {{ if .NextInSection }}
+            <a class="previous" href="{{ .NextInSection.RelPermalink }}">
+                ← {{ .NextInSection.Title }}
+            </a>
+        {{ end }}
+        {{ if .PrevInSection }}
+            <a class="next" href="{{ .PrevInSection.RelPermalink }}">
+                {{ .PrevInSection.Title }} →
+            </a>
+        {{ end }}
+    </div>
+    {{ end }}
+</div>
+{{ end }}

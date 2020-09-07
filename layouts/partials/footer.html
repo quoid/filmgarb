@@ -1,0 +1,13 @@
+{{ $RelPermalink := .RelPermalink }}
+<footer>
+    <div class="container">
+        <div>&copy; {{ now.Year }} Filmgarb.com or respective owners</div>
+        <nav>
+            {{ range .Site.Menus.footer }}
+                <a {{ if eq $RelPermalink .URL }}class="active"{{ end }} href="{{ .URL }}">
+                    {{- .Name | humanize -}}
+                </a>
+            {{ end }}
+        </nav>
+    </div>
+</footer>

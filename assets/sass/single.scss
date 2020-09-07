@@ -1,0 +1,134 @@
+.tags {
+    color: $link-color;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.single ul {
+    margin: 1.000rem 0;
+}
+
+
+.single li {
+    list-style-position: inside;
+    margin: 0.500rem 0;
+}
+
+.single p {
+    margin: 1.000rem 0;
+
+    &:first-of-type {
+        margin-top: 0.500rem;
+    }
+}
+
+.single {
+
+    figure {
+        box-shadow: $box-shadow-large;
+        position: relative;
+    }
+
+    h1 {
+        @include subheading-font-size();
+        margin: 0.500rem 0;
+
+        @media (min-width: $breakpoint-medium) {
+            @include heading-font-size();
+        }
+    }
+
+    h2 {
+        @include subheading-font-size();
+        color: $primary-font-color;
+        font-weight: bold;
+        margin: 0.500rem 0;
+    }
+
+    h3 {
+        color: $primary-font-color;
+        font-weight: bold;
+        margin: 0.500rem 0;
+    }
+
+    blockquote {
+        border-left: 0.125rem solid $hr-color;
+        color: rgba(#d2e5f0, 0.50);;
+        font-style: italic;
+        margin: 0.000rem;
+        padding: 0.500rem 1.000rem;
+    }
+
+    pre {
+        margin: 0.500rem 0;
+        padding: 0.500rem;
+    }
+}
+
+.single-item {
+
+    .icon {
+        color: rgba($color: white, $alpha: 0.25);
+        height: 1.125rem;
+        position: absolute;
+        right: 0.500rem;
+        top: 0.500rem;
+        width: 1.125rem;
+        z-index: 2;
+    }
+
+    .unavailable,
+    .buy {
+        @include large-font-size();
+        margin-bottom: 2.000rem;
+    }
+}
+
+.single-post {
+
+    .tags {
+        margin: 0.250rem 0;
+    }
+
+    h1 {
+        @include heading-font-size();
+        margin: 1.000rem 0;
+    }
+
+    h1:first-of-type {
+        margin-top: 0;
+    }
+
+    p:last-of-type {
+        margin-bottom: 0;
+    }
+
+    figure {
+        margin: 1.000rem 0;
+        padding-bottom: 56.25%;
+    }
+
+    figure img {
+        left: 0;
+        position: absolute;
+        top: 0;
+    }
+
+    figcaption {
+        background-color: rgba(black, 0.65);
+        bottom: 0;
+        font-size: 85%;
+        font-weight: 500;
+        left: 0;
+        position: absolute;
+        padding: 0 0.500rem;
+        text-align: center;
+        width: 100%;
+        z-index: 2;
+    }
+
+    strong {
+        color: $primary-font-color;
+    }
+}

@@ -1,0 +1,38 @@
+<figure {{ with .Get "class" }}class="{{ . }}"{{ end }}>
+    {{ if .Get "link" }}
+        <a
+            href="{{ .Get "link" }}"
+            {{ with .Get "target" }} target="{{ . }}"{{ end }}
+            {{ with .Get "rel" }} rel="{{ . }}"{{ end }}
+        >
+    {{ end }}
+    {{ $imageResource := ($.Site.GetPage "uploads").Resources.GetMatch (print (.Get "src") ".*") }}
+    {{ if ne $imageResource nil }}
+        {{ $image1x := $imageResource }}
+        {{ $image2x := $imageResource }}
+        {{ if ge $imageResource.Width "599" }}
+            {{ $image1x = $imageResource.Fill "599x337 Center Lanczos" }}
+        {{ end }}
+        {{ if ge $imageResource.Width "1198" }}
+            {{ $image2x = $imageResource.Fill "1198x674 Center Lanczos" }}
+        {{ end }}
+        <img
+            src="{{ $image1x.RelPermalink }}"
+            sizes="(max-width: 600px) 100vw, 600px"
+            srcset="{{ $image1x.RelPermalink }} {{ $image1x.Width }}w,
+                    {{ $image2x.RelPermalink }} {{ $image2x.Width }}w"
+            alt="{{ with .Get "alt" }}{{ . }}{{ else }}{{ .Get "caption" | markdownify| plainify }}{{ end }}"
+            loading="lazy"
+        >
+    {{ else }}
+        <img
+            src="/img/fallback-item.png"
+            alt="{{ with .Get "alt" }}{{ . }}{{ else }}{{ .Get "caption" | markdownify| plainify }}{{ end }}"
+            loading="lazy"
+        >
+    {{ end }}
+    {{if .Get "link" }}</a>{{ end }}
+    {{ with .Get "caption" }}
+        <figcaption>{{ . }}</figcaption>
+    {{ end }}
+</figure>
