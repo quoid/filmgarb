@@ -17,3 +17,8 @@
         Referrer-Policy = "strict-origin-when-cross-origin"
         X-Content-Type-Options = "nosniff"
         X-Frame-Options = "DENY"
+[[headers]]
+    for = "/*.xml"
+    [headers.values]
+        Content-Security-Policy =  "style-src 'unsafe-inline';"
+        X-Content-Type-Options = ""

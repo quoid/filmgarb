@@ -15,7 +15,7 @@ summaryLength = 10
     description = "Filmgarb is a catalog of clothes and accessories from all of your favorite movies and shows. We can pickle that."
     image = "site.png"
     tagline = "Clothes from movies n' shows"
-    version = "1.0.0"
+    version = "1.1.0"
 [taxonomies]
     actor = "actors"
     category = "categories"
@@ -91,4 +91,8 @@ summaryLength = 10
             Referrer-Policy = "strict-origin-when-cross-origin"
             X-Content-Type-Options = "nosniff"
             X-Frame-Options = "DENY"
-
+    [[server.headers]]
+        for = "/*.xml"
+        [server.headers.values]
+            Content-Security-Policy =  "style-src 'unsafe-inline';"
+            X-Content-Type-Options = ""
