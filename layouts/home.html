@@ -1,5 +1,24 @@
 {{ define "main" }}
+{{/*  only show items that are not in the graveyard  */}}
 {{ $items := where (where .Site.RegularPages "Type" "items") ".Params.graveyard" "!=" true }}
+{{/*  see popular.html for more details on the method used below  */}}
+{{/*  create dict of all item permalinks and file paths  */}}
+{{ $allItems := dict }}
+{{ range $items }}
+    {{ $item := dict .RelPermalink .File.Path }}
+    {{ $allItems = merge $allItems $item }}
+{{ end }}
+{{/*  create trending items  */}}
+{{ $trending := slice }}
+{{ range $.Site.Data.trending.feed.entry }}
+    {{ $permalink := index .title "$t" }}
+    {{ if isset $allItems $permalink }}
+        {{ $path := index $allItems $permalink }}
+        {{ with $.Site.GetPage $path }}
+            {{ $trending = $trending | append . }}
+        {{ end }}
+    {{ end }}
+{{ end }}
 <div class="container">
     <h1>Featured</h1>
     <div class="item-feed featured">
@@ -9,21 +28,9 @@
     </div>
     <hr>
     <h1>Trending</h1>
-    {{/*  see popular.html for more details on the method used below  */}}
-    {{ $allItems := dict }}
-    {{ range $items }}
-        {{ $item := dict .RelPermalink .File.Path }}
-        {{ $allItems = merge $allItems $item }}
-    {{ end }}
     <div class="item-feed small">
-        {{ range $.Site.Data.trending.feed.entry | first 3 }}
-            {{ $permalink := index .title "$t" }}
-            {{ if isset $allItems $permalink }}
-                {{ $path := index $allItems $permalink }}
-                {{ with $.Site.GetPage $path }}
-                    {{ partial "item" (dict "context" . "type" "small") }}
-                {{ end }}
-            {{ end }}
+        {{ range $trending | first 3 }}
+            {{ partial "item" (dict "context" . "type" "small") }}
         {{ end }}
     </div>
     <hr>
@@ -36,7 +43,13 @@
     <hr>
     <h1>Random</h1>
     <div class="item-feed mosaic">
-        {{ range shuffle $items | first 6 }}
+        {{/*  don't include trending items or first 3 newest  */}}
+        {{ $trendingLinks := slice }}
+        {{ range first 3 $trending }}
+            {{ $trendingLinks = $trendingLinks | append .RelPermalink }}
+        {{ end }}
+        {{ $random := where $items ".RelPermalink" "not in" $trendingLinks | after 3 | shuffle }}
+        {{ range $random | first 6 }}
             {{ partial "item" (dict "context" . "type" "mosaic") }}
         {{ end }}
     </div>
