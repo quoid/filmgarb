@@ -40,13 +40,13 @@
 {{ if .IsPage }}
     {{ $iso8601 := "2006-01-02T15:04:05-07:00" }}
     {{ if not .PublishDate.IsZero }}
-        <meta property="article:published_time" content="{{ .PublishDate.Format $iso8601 }}">
+        <meta property="article:published_time" content="{{ dateFormat $iso8601 .PublishDate.UTC }}">
     {{ else if not .Date.IsZero }}
-        <meta property="article:published_time" content="{{ .Date.Format $iso8601 }}">
+        <meta property="article:published_time" content="{{ dateFormat $iso8601 .Date.UTC }}">
     {{ end }}
     {{ if not .Lastmod.IsZero }}
-        <meta property="article:modified_time" content="{{ .Lastmod.Format $iso8601 }}">
+        <meta property="article:modified_time" content="{{ dateFormat $iso8601 .Lastmod.UTC }}">
     {{else if not .Date.IsZero }}
-        <meta property="article:modified_time" content="{{ .Lastmod.Format $iso8601 }}">
+        <meta property="article:modified_time" content="{{ dateFormat $iso8601 .Lastmod.UTC }}">
     {{ end }}
 {{ end }}
