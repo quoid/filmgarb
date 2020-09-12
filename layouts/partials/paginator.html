@@ -1,11 +1,17 @@
 {{ if gt $.Paginator.TotalPages 1 }}
+{{ $prev := "Prev" }}
+{{ $next := "Next" }}
+{{ if eq .Type "items" }}
+    {{ $prev = "Newer" }}
+    {{ $next = "Older" }}
+{{ end }}
 <div class="paginator">
     <hr>
     {{ if $.Paginator.HasPrev }}
-        <a class="previous" href="{{ $.Paginator.Prev.URL }}">← Newer</a>
+        <a class="previous" href="{{ $.Paginator.Prev.URL }}">← {{ $prev }}</a>
     {{ end }}
     {{ if $.Paginator.HasNext }}
-        <a class="next" href="{{ $.Paginator.Next.URL }}">Older →</a>
+        <a class="next" href="{{ $.Paginator.Next.URL }}">{{ $next }} →</a>
     {{ end }}
 </div>
 {{ end }}
