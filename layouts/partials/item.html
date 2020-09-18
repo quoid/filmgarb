@@ -85,7 +85,11 @@
     </figure>
     <div class="item-content">
         <div class="title">{{ .context.Title | title }}</div>
-        <p>{{ .context.Content | plainify | safeHTML | truncate 140 "..." }}</p>
+        {{ if eq .type "small" }}
+            <p>{{ .context.Content | plainify | safeHTML | truncate 120 "..." }}</p>
+        {{ else }}
+            <p>{{ .context.Content | plainify | safeHTML | truncate 140 "..." }}</p>
+        {{ end }}
         {{/*  if item in unavailable, don't show purchase link  */}}
         {{ if eq .context.Params.graveyard true }}
             <div class="unavailable">unavailable</div>
