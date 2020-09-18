@@ -1,0 +1,24 @@
+{{/*  returns randomized pages data of items that not in graveyard */}}
+{{ $items := where (where .context.Site.RegularPages "Type" "items") ".Params.graveyard" "!=" true }}
+{{/*  if custom page data passed to partial, use that  */}}
+{{ if .items }}
+    {{ $items = .items }}
+{{ end }}
+{{/*  don't want random items from the same show/film  */}}
+{{/*  store feature titles here to check against when building pages data  */}}
+{{ $titles := slice }}
+{{/*  the max number of pages to return  */}}
+{{ $maxPages := 6 }}
+{{/*  the pages data  */}}
+{{ $random := slice }}
+{{ range $items | shuffle }}
+    {{/*  the item's feature title */}}
+    {{ $t := index (.Params.titles) 0 }}
+    {{/*  if haven't exceed mxPages and the feature title is unique  */}}
+    {{ if and (lt (len $titles) $maxPages) (not (in $titles $t)) }}
+        {{ $random = $random | append . }}
+        {{ $titles = $titles | append $t }}
+    {{ end }}
+{{ end }}
+{{/*  {{ printf "%T\n" $random }}  */}}
+{{ return $random }}

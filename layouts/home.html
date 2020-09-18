@@ -10,8 +10,8 @@
 {{ end }}
 {{/*  create trending items  */}}
 {{ $trending := slice }}
-{{ range $.Site.Data.trending.feed.entry }}
-    {{ $permalink := index .title "$t" }}
+{{ range $.Site.Data.trending.data }}
+    {{ $permalink := .resource }}
     {{ if isset $allItems $permalink }}
         {{ $path := index $allItems $permalink }}
         {{ with $.Site.GetPage $path }}
@@ -43,13 +43,16 @@
     <hr>
     <h1>Random</h1>
     <div class="item-feed mosaic">
-        {{/*  don't include trending items or first 3 newest  */}}
+        {{/*  don't include trending items  */}}
         {{ $trendingLinks := slice }}
         {{ range first 3 $trending }}
             {{ $trendingLinks = $trendingLinks | append .RelPermalink }}
         {{ end }}
+        {{/*  don't include first 3 newest items  */}}
         {{ $random := where $items ".RelPermalink" "not in" $trendingLinks | after 3 | shuffle }}
-        {{ range $random | first 6 }}
+        {{/*  send to random partial for better randomization  */}}
+        {{ $random =  partial "random" (dict "context" . "items" $random) }}
+        {{ range $random }}
             {{ partial "item" (dict "context" . "type" "mosaic") }}
         {{ end }}
     </div>

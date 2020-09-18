@@ -6,4 +6,4 @@
     {{ $term := delimit (split .context.Data.Term " ") "_" | urlize }}
     {{ $img = print "_" .context.Data.Plural "-" $term | urlize }}
 {{ end }}
-{{ $img }}
+{{ return $img }}

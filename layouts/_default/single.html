@@ -68,9 +68,9 @@
     <h1>Random</h1>
     <div class="item-feed mosaic">
         {{ $random := where (where .Site.RegularPages "Type" "items") "Title" "!=" .Title }}
-        {{ range shuffle $random | first 6 }}
+        {{ $random =  partial "random" (dict "context" . "items" $random) }}
+        {{ range $random }}
             {{ partial "item" (dict "context" . "type" "mosaic") }}
-        <br>
         {{ end }}
     </div>
 </div>
