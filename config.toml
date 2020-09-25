@@ -28,10 +28,13 @@ summaryLength = 10
     media = "/:slug"
     titles = "/:slug"
     blog = "/:section/:filename"
+[imaging]
+    resampleFilter = "Lanczos"
+    quality = 75
 [menu]
     [[menu.header]]
-        identifier = "new"
-        name = "new"
+        identifier = "items"
+        name = "items"
         url = "/items/"
         weight = -130
     [[menu.header]]

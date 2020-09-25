@@ -17,17 +17,21 @@
             <div class="responsive-image-16-9">
                 {{/*  if an image resource is matched, create image sizes  */}}
                 {{ if ne $imageResource nil }}
-                    {{ $single1x := $imageResource }}
-                    {{ $single2x := $imageResource }}
-                    {{ if ge $imageResource.Width "599" }}
-                        {{ $single1x = $imageResource.Fill "599x337 Center Lanczos" }}
+                    {{/*  check if original image is large enough to make 1x and 2x sizes  */}}
+                    {{ $single1x := cond (ge $imageResource.Width "599") true false }}
+                    {{ $single2x := cond (ge $imageResource.Width "1198") true false }}
+                    {{ if or (eq $single1x false) (eq $single2x false) }}
+                        {{/*  the original is not large enough to cover one of the sizes  */}}
+                        {{/*  process the original at original dimension to reduce file size  */}}
+                        {{ $options := print $imageResource.Width "x" $imageResource.Height }}
+                        {{ $imageResource = $imageResource.Resize $options }}
                     {{ end }}
-                    {{ if ge $imageResource.Width "1198" }}
-                        {{ $single2x = $imageResource.Fill "1198x674 Center Lanczos" }}
-                    {{ end }}
+                    {{/*  set the appropriate resource for the var  */}}
+                    {{ $single1x = cond (eq $single1x true) ($imageResource.Fill "599x337 Center") $imageResource }}
+                    {{ $single2x = cond (eq $single2x true) ($imageResource.Fill "1198x674 Center") $imageResource }}
                     <img
                         src="{{ $single1x.RelPermalink }}"
-                        sizes="(max-width: 600px) 100vw, 600px"
+                        sizes="(max-width: 600px) calc(100vw - 24px), 600px"
                         srcset="{{ $single1x.RelPermalink }} {{ $single1x.Width }}w,
                                 {{ $single2x.RelPermalink }} {{ $single2x.Width }}w"
                         alt="{{ .Title | title }}"

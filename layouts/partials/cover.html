@@ -2,30 +2,28 @@
 {{ $imageName := partial "img" (dict "context" .context "type" "cover") | urlize }}
 {{ $imageName = print $imageName ".*" }}
 {{ $imageResource := (.context.Site.GetPage "section" "uploads").Resources.GetMatch $imageName }}
-{{/*  if image resource is matched, create image sizes  */}}
-{{ $cover1x := "" }}
-{{ $cover2x := "" }}
-{{ if ne $imageResource nil }}
-    {{ $cover1x = $imageResource }}
-    {{ $cover2x = $imageResource }}
-    {{/*  ensure the source image dimension exceed desired image sizes  */}}
-    {{ if ge $imageResource.Width "185" }}
-        {{ $cover1x = $imageResource.Fill "185x278 Center Lanczos" }}
-    {{ end }}
-    {{ if ge $imageResource.Width "370" }}
-        {{ $cover2x = $imageResource.Fill "370x556 Center Lanczos" }}
-    {{ end }}
-{{ end }}
 <div class="cover">
     <figure>
         <a href="{{ .context.RelPermalink }}" class="responsive-image-2-3">
-            {{/*  again, check if image resource exists  */}}
+            {{/*  if an image resource is matched, create image sizes  */}}
             {{ if ne $imageResource nil }}
+                {{/*  check if original image is large enough to make 1x and 2x sizes  */}}
+                {{ $cover1x := cond (ge $imageResource.Width "185") true false }}
+                {{ $cover2x := cond (ge $imageResource.Width "370") true false }}
+                {{ if or (eq $cover1x false) (eq $cover2x false) }}
+                    {{/*  the original is not large enough to cover one of the sizes  */}}
+                    {{/*  process the original at original dimension to reduce file size  */}}
+                    {{ $options := print $imageResource.Width "x" $imageResource.Height }}
+                    {{ $imageResource = $imageResource.Resize $options }}
+                {{ end }}
+                {{/*  set the appropriate resource for the var  */}}
+                {{ $cover1x = cond (eq $cover1x true) ($imageResource.Fill "185x278 Center") $imageResource }}
+                {{ $cover2x = cond (eq $cover2x true) ($imageResource.Fill "370x556 Center") $imageResource }}
                 {{/*  check type since each have different sizes  */}}
                 {{ if eq .type "list" }}
                     <img
                         src="{{ $cover1x.RelPermalink }}"
-                        sizes="(max-width: 600px) 30vw, 143px"
+                        sizes="(max-width: 600px) calc(((100vw - 16px) / 3) - 9px), 143px"
                         srcset="{{ $cover1x.RelPermalink }} {{ $cover1x.Width }}w,
                                 {{ $cover2x.RelPermalink }} {{ $cover2x.Width }}w"
                         alt="{{ .context.Data.Term | title }}"

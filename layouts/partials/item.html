@@ -2,35 +2,30 @@
 {{ $imageName := partial "img" (dict "context" .context "type" .type) | urlize }}
 {{ $imageName = print $imageName ".*" }}
 {{ $imageResource := (.context.Site.GetPage "uploads").Resources.GetMatch $imageName }}
-{{/*  if image resource is matched, create image sizes  */}}
-{{ $item1x := "" }}
-{{ $item2x := "" }}
-{{ $item3x := "" }}
-{{ if ne $imageResource nil }}
-    {{ $item1x = $imageResource }}
-    {{ $item2x = $imageResource }}
-    {{ $item3x = $imageResource }}
-    {{/*  ensure the source image dimension exceed desired image sizes  */}}
-    {{ if ge $imageResource.Width "295" }}
-        {{ $item1x = $imageResource.Fill "295x166 Center Lanczos" }}
-    {{ end }}
-    {{ if ge $imageResource.Width "599" }}
-        {{ $item2x = $imageResource.Fill "599x337 Center Lanczos" }}
-    {{ end }}
-    {{ if ge $imageResource.Width "1198" }}
-        {{ $item3x = $imageResource.Fill "1198x674 Center Lanczos" }}
-    {{ end }}
-{{ end }}
 <article class="item">
     <figure>
         <a href="{{ .context.RelPermalink }}" class="responsive-image-16-9">
-            {{/*  again, check if image resource exists  */}}
+            {{/*  if an image resource is matched, create image sizes  */}}
             {{ if ne $imageResource nil }}
+                {{/*  check if original image is large enough to make 1x and 2x sizes  */}}
+                {{ $item1x := cond (ge $imageResource.Width "295") true false }}
+                {{ $item2x := cond (ge $imageResource.Width "599") true false }}
+                {{ $item3x := cond (ge $imageResource.Width "1198") true false }}
+                {{ if or (eq $item1x false) (eq $item2x false) (eq $item3x false) }}
+                    {{/*  the original is not large enough to cover one of the sizes  */}}
+                    {{/*  process the original at original dimension to reduce file size  */}}
+                    {{ $options := print $imageResource.Width "x" $imageResource.Height }}
+                    {{ $imageResource = $imageResource.Resize $options }}
+                {{ end }}
+                {{/*  set the appropriate resource for the var  */}}
+                {{ $item1x = cond (eq $item1x true) ($imageResource.Fill "295x166 Center") $imageResource }}
+                {{ $item2x = cond (eq $item2x true) ($imageResource.Fill "599x337 Center") $imageResource }}
+                {{ $item3x = cond (eq $item3x true) ($imageResource.Fill "1198x674 Center") $imageResource }}
                 {{/*  check type since each have different sizes  */}}
                 {{ if eq .type "featured" }}
                     <img
                         src="{{ $item2x.RelPermalink }}"
-                        sizes="(max-width: 600px) 100vw, 600px"
+                        sizes="(max-width: 600px) calc(100vw - 24px), 600px"
                         srcset="{{ $item2x.RelPermalink }} {{ $item2x.Width }}w,
                                 {{ $item3x.RelPermalink }} {{ $item3x.Width }}w"
                         alt="{{ .context.Title | title }}"
@@ -39,7 +34,7 @@
                 {{ else if eq .type "small" }}
                     <img
                         src="{{ $item1x.RelPermalink }}"
-                        sizes="(max-width: 600px) 50vw, 295px"
+                        sizes="(max-width: 600px) calc(((100vw - 24px) / 2) - 5px), 295px"
                         srcset="{{ $item1x.RelPermalink }} {{ $item1x.Width }}w,
                                 {{ $item2x.RelPermalink }} {{ $item2x.Width }}w,
                                 {{ $item3x.RelPermalink }} {{ $item3x.Width }}w"
@@ -49,7 +44,7 @@
                 {{ else if eq .type "mosaic" }}
                     <img
                         src="{{ $item1x.RelPermalink }}"
-                        sizes="(max-width: 600px) 50vw, 200px"
+                        sizes="(max-width: 600px) calc(50vw - 12px), 200px"
                         srcset="{{ $item1x.RelPermalink }} {{ $item1x.Width }}w,
                                 {{ $item2x.RelPermalink }} {{ $item2x.Width }}w,
                                 {{ $item3x.RelPermalink }} {{ $item3x.Width }}w"
@@ -59,7 +54,7 @@
                 {{ else if eq .type "list" }}
                     <img
                         src="{{ $item1x.RelPermalink }}"
-                        sizes="(max-width: 600px) 100vw, 295px"
+                        sizes="(max-width: 600px) calc(100vw - 24px), 295px"
                         srcset="{{ $item1x.RelPermalink }} {{ $item1x.Width }}w,
                                 {{ $item2x.RelPermalink }} {{ $item2x.Width }}w,
                                 {{ $item3x.RelPermalink }} {{ $item3x.Width }}w"
