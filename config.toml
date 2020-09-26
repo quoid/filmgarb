@@ -1,6 +1,7 @@
 baseURL = "https://www.filmgarb.com/"
 languageCode = "en-us"
 title = "Filmgarb - Clothes from movies n' shows"
+enableRobotsTXT = true
 Paginate = 24
 summaryLength = 10
 [minify]
