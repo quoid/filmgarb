@@ -1,10 +1,10 @@
 {{ if gt $.Paginator.TotalPages 1 }}
 {{ $prev := "Prev" }}
 {{ $next := "Next" }}
-{{ if eq .Type "items" }}
+{{/*  {{ if eq .Type "items" }}
     {{ $prev = "Newer" }}
     {{ $next = "Older" }}
-{{ end }}
+{{ end }}  */}}
 <div class="paginator">
     <hr>
     {{ if $.Paginator.HasPrev }}
