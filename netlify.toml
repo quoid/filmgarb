@@ -13,7 +13,7 @@
 [[headers]]
     for = "/*"
     [headers.values]
-        Content-Security-Policy =  "default-src 'none'; script-src 'self' https://www.google-analytics.com; style-src 'self'; img-src 'self' https://www.google-analytics.com www.google-analytics.com; media-src 'self'; manifest-src 'self'; connect-src https://www.google-analytics.com www.google-analytics.com"
+        Content-Security-Policy =  "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; manifest-src 'self'"
         Referrer-Policy = "strict-origin-when-cross-origin"
         X-Content-Type-Options = "nosniff"
         X-Frame-Options = "DENY"

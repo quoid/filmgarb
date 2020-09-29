@@ -27,9 +27,6 @@
         {{ hugo.Generator }}
         <meta name="version" content="{{ .Site.Params.version }}">
         <meta name="build-date" content="{{ dateFormat `Mon, 02 Jan 2006 15:04:00 MST` now.UTC }}">
-        {{ $js := resources.Get "js/main.js" }}
-        <script type="text/javascript" src="{{ $js.RelPermalink }}"></script>
-        <script async src="https://www.google-analytics.com/analytics.js"></script>
     </head>
     <body class='{{ if eq .Kind "404" }}_404{{ else }}{{ .Type }} {{ .Kind }}{{ end }}'>
         {{ partial "header" . }}
