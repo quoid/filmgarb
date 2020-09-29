@@ -25,9 +25,9 @@
     {{/*  popular.json might contain RelPermalinks from the pre-hugo version of the website  */}}
     {{/*  since migrating to hugo, some pages were removed or had their permalink changed  */}}
     {{/*  will need to ensure that the RelPermalink actually exists in website  */}}
-    {{ range  $.Site.Data.popular.feed.entry }}
+    {{ range $.Site.Data.popular.data }}
         {{/*  get the RelPermalink from json  */}}
-        {{ $permalink := index .title "$t" }}
+        {{ $permalink := .resource }}
         {{/*  check that the RelPermalink exists in website  */}}
         {{ if isset $items $permalink }}
             {{/*  get the .File.Path from the items map  */}}
