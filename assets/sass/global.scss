@@ -176,3 +176,16 @@ code {
     font-weight: bold;
     margin-top: 1.000rem;
 }
+
+.ftc {
+    @include small-font-size();
+
+    a {
+        color: $link-color;
+    }
+
+    .single & {
+        color: $disabled-font-color;
+        font-style: italic;
+    }
+}
