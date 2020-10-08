@@ -2,7 +2,7 @@
 <footer>
     <div class="container">
         <div>&copy; {{ now.Year }} Filmgarb.com or respective owners</div>
-        <div class="ftc">This websites uses some <a href="/blog/about/#affiliate-links">affiliate links</a></div>
+        <div class="ftc">Filmgarb uses some <a href="/blog/about/#affiliate-links">affiliate links</a></div>
         <nav>
             {{ range .Site.Menus.footer }}
                 <a {{ if eq $RelPermalink .URL }}class="active"{{ end }} href="{{ .URL }}">
